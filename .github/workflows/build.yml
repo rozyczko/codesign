@@ -7,7 +7,6 @@ jobs:
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by ESS."
-      # - run: echo 'The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}.'
       - name: Check out repository code
         uses: actions/checkout@v3
 
@@ -15,4 +14,16 @@ jobs:
         run: |
           ls ${{ github.workspace }}
 
+      - name: Copy binary to workspace
+        run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
+
+      - name: Sign binary
+        uses: ess-dmsc-dram/code-sign-action@v1
+        with:
+          cert: ${{ secrets.EV_CERT }}
+          cert-password: ${{ secrets.EV_CERT_PASSWORD }}
+          binary: ${{ github.workspace }}/binary.exe
+          output: ${{ github.workspace }}/binary-signed.exe
+
       - run: echo "This job's status is ${{ job.status }}."
+

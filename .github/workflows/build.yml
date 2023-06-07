@@ -5,9 +5,9 @@ jobs:
   binary-sign:
     runs-on: ess_win
     steps:
-      - run: echo '🎉 The job was automatically triggered by a ${{ github.event_name }} event.''
-      - run: echo '🐧 This job is now running on a ${{ runner.os }} server hosted by ESS.'
-      - run: echo '🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}.'
+      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "This job is now running on a ${{ runner.os }} server hosted by ESS."
+      # - run: echo 'The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}.'
       - name: Check out repository code
         uses: actions/checkout@v3
 
@@ -15,4 +15,4 @@ jobs:
         run: |
           ls ${{ github.workspace }}
 
-      - run: echo '🍏 This job's status is ${{ job.status }}.'
+      - run: echo "This job's status is ${{ job.status }}."

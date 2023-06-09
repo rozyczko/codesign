@@ -36,6 +36,7 @@ jobs:
         shell: cmd
         run: |
             "C:\\Program Files (x86)\\Windows Kits\\10\\App Certification Kit\\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /sha1 ${{ secrets.sha1 }} ${{ github.workspace }}/binary2.exe"
+            continue-on-error: false
             move ${{ github.workspace }}/binary2.exe ${{ github.workspace }}/binary-signed.exe
 
 

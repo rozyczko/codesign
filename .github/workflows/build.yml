@@ -35,8 +35,17 @@ jobs:
       - name: Sign binary
         shell: cmd
         run: |
-            "C:\\Program Files (x86)\\Windows Kits\\10\\App Certification Kit\\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /sha1 ${{ secrets.sha1 }} ${{ github.workspace }}/binary.exe"
+            "C:\\Program Files (x86)\\Windows Kits\\10\\App Certification Kit\\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /sha1 ${{ secrets.sha1 }} ${{ github.workspace }}/binary2.exe"
+            move ${{ github.workspace }}/binary2.exe ${{ github.workspace }}/binary-signed.exe
 
+
+      - name: upload signed installer
+        uses: actions/upload-artifact@v3
+        with:
+            name: SasView-Installer-signed
+            path: |
+             ${{ github.workspace }}\\binary-signed.exe
+             if-no-files-found: error
 
       - run: echo "This job's status is ${{ job.status }}."
 

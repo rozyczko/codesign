@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is testing out EV Binary cert signing GitHub Actio
 on: [push]
 jobs:
   create-bin:
-    runs-on: ess_win
+    runs-on: windows-latest
     steps:
       - name: Copy binary to workspace
         run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe

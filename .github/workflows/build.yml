@@ -52,7 +52,7 @@ jobs:
         with:
             name: Installer-signed
             path: |
-             ${{ github.workspace }}\\binary2.exe
+             ${{ github.workspace }}\\binary.exe
              if-no-files-found: error
 
       - run: echo "This job's status is ${{ job.status }}."

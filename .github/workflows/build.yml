@@ -25,7 +25,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: my-binary
-          path: ${{ github.workspace }}\\binary2.exe
+          path: ${{ github.workspace }}
 
       - name: List files in the repository
         run: |
@@ -40,7 +40,7 @@ jobs:
       - name: Sign binary
         uses: lando/code-sign-action@v2
         with:
-          file: ${{ github.workspace }}\\binary2.exe
+          file: ${{ github.workspace }}\\binary.exe
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           keylocker-host: ${{ secrets.KEYLOCKER_HOST }}

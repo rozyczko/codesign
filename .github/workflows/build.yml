@@ -40,7 +40,7 @@ jobs:
       - name: Sign binary
         uses: lando/code-sign-action@v2
         with:
-          file: ${{ github.workspace }}\\binary.exe
+          file: binary.exe
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           keylocker-host: ${{ secrets.KEYLOCKER_HOST }}

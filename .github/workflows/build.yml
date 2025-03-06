@@ -37,7 +37,7 @@ jobs:
           file: binary.exe
           keylocker-host: https://clientauth.one.digicert.com
           keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY_TEST }}
-          keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }}
+          keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH_TEST }}
           keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}

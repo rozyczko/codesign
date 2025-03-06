@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out EV Binary cert signing GitHub Action
+name: DigiCert test
+
 on: [push]
 jobs:
   create-bin:
@@ -38,7 +38,7 @@ jobs:
           keylocker-host: https://clientauth.one.digicert.com
           keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY_TEST }}
           keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH_TEST }}
-          keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
+          keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS_TEST }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
 

@@ -35,11 +35,12 @@ jobs:
         uses: lando/code-sign-action@v3
         with:
           file: binary.exe
-          certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
-          certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
-          keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
+          certificate-data: ${{ secrets.KEYLOCKER_CLIENT_CERT }}
+          certificate-password: ${{ secrets.KEYLOCKER_CLIENT_CERT_PASSWORD }}
+          keylocker-host: https://clientauth.one.digicert.com
           keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY }}
           keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }}
+          keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
 
       - name: upload signed installer
         uses: actions/upload-artifact@v4

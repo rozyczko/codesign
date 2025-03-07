@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out EV Binary cert signing GitHub Action
+name: DigiCert test
+
 on: [push]
 jobs:
   create-bin:
@@ -9,43 +9,45 @@ jobs:
         run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
 
       - name: Upload artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: my-binary
           path: ${{ github.workspace }}\\binary.exe
 
   binary-sign:
-    runs-on: ess_win
+    runs-on: windows-latest
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "This job is now running on a ${{ runner.os }} server hosted by ESS."
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Copy artifact to workspace
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
           name: my-binary
-          path: ${{ github.workspace }}\\binary2.exe
+          path: ${{ github.workspace }}
 
       - name: List files in the repository
         run: |
             ls ${{ github.workspace }}
 
       - name: Sign binary
-        shell: cmd
-        continue-on-error: false
-        run: |
-            "C:\\Program Files (x86)\\Windows Kits\\10\\App Certification Kit\\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /sha1 ${{ secrets.sha1 }} ${{ github.workspace }}/binary2.exe"
-            move ${{ github.workspace }}/binary2.exe ${{ github.workspace }}/binary-signed.exe
-
+        uses: lando/code-sign-action@v3
+        with:
+          file: binary.exe
+          keylocker-host: https://clientauth.one.digicert.com
+          keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY_TEST }}
+          keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH_TEST }}
+          keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS_TEST }}
+          certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
+          certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
 
       - name: upload signed installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-            name: SasView-Installer-signed
+            name: Installer-signed
             path: |
-             ${{ github.workspace }}\\binary-signed.exe
+             ${{ github.workspace }}\\binary.exe
              if-no-files-found: error
 
       - run: echo "This job's status is ${{ job.status }}."

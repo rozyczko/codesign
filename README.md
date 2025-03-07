@@ -1,1 +1,1 @@
-Project for testing self-runner with EV code signing action.
+Project for testing DigiCert's Keylocker code signing action.

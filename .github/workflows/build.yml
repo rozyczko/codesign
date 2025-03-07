@@ -35,7 +35,7 @@ jobs:
         uses: lando/code-sign-action@v3
         with:
           file: binary.exe
-          keylocker-host: https://clientauth.one.digicert.com
+          keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
           keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY_TEST }}
           keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH_TEST }}
           keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS_TEST }}

@@ -31,16 +31,46 @@ jobs:
         run: |
             ls ${{ github.workspace }}
 
-      - name: Sign binary
-        uses: lando/code-sign-action@v3
-        with:
-          file: binary.exe
-          keylocker-host: https://clientauth.one.digicert.com
-          keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY }}
-          keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }}
-          keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
-          certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD_BAD }}
-          certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
+      # - name: Sign binary
+      #   uses: lando/code-sign-action@v3
+      #   with:
+      #     file: binary.exe
+      #     keylocker-host: https://clientauth.one.digicert.com
+      #     keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY }}
+      #     keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }}
+      #     keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
+      #     certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD_BAD }}
+      #     certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
+
+      - name: Install DigiCert Client tools from Github Custom Actions marketplace
+        id: Digicert Code Signing Snippet
+        uses: digicert/ssm-code-signing@v1.0.1
+
+      - name: Set up certificate
+        run: |
+          echo "${{ secrets.WINDOZE_CERT_DATA }}" | base64 --decode > /d/Certificate_pkcs12.p12
+        shell: bash
+
+      - name: Set variables
+        id: variables
+        run: |
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "SM_HOST=${{ secrets.KEYLOCKER_HOST }}" >> "$GITHUB_ENV"
+          echo "SM_API_KEY=${{ secrets.KEYLOCKER_API_KEY }}" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.WINDOZE_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+        shell: bash
+
+      # - name: Signing using certificate fingerprint
+      #   run: |
+      #      smctl sign --fingerprint ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }} --input binary.exe --config-file "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\smtools-windows-x64\\pkcs11properties.cfg"
+      #   shell: cmd
+
+
+      - name: Signing using keypair alias
+        run: |
+           smctl sign --keypair-alias ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }} --input binary.exe --config-file "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\smtools-windows-x64\\pkcs11properties.cfg"
+        shell: cmd
 
       - name: upload signed installer
         uses: actions/upload-artifact@v4

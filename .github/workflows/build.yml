@@ -3,20 +3,18 @@ name: DigiCert test
 on: [push, workflow_dispatch]
 
 jobs:
-  create-bin:
-    runs-on: windows-latest
-    steps:
-      - name: list directory
-        run: dir c:\Windows\System32\
+  # create-bin:
+  #   runs-on: windows-latest
+  #   steps:
 
-      - name: Copy binary to workspace
-        run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
+  #     - name: Copy binary to workspace
+  #       run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-binary
-          path: ${{ github.workspace }}\\binary.exe
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: my-binary
+  #         path: ${{ github.workspace }}\\binary.exe
 
   binary-sign:
     runs-on: windows-latest
@@ -25,11 +23,13 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Copy artifact to workspace
-        uses: actions/download-artifact@v4
-        with:
-          name: my-binary
-          path: ${{ github.workspace }}
+      # - name: Copy artifact to workspace
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: my-binary
+      #     path: ${{ github.workspace }}\\binary.exe
+      - name: Copy binary to workspace
+        run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
 
       - name: List files in the repository
         run: |

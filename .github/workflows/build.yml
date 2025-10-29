@@ -1,6 +1,7 @@
 name: DigiCert test
 
-on: [push]
+on: [push, workflow_dispatch]
+
 jobs:
   create-bin:
     runs-on: windows-latest

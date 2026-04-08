@@ -37,7 +37,7 @@ jobs:
               SM_API_KEY: ${{ secrets.KEYLOCKER_API_KEY }}
               SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
               SM_CLIENT_CERT_PASSWORD: ${{ secrets.WINDOZE_CERT_PASSWORD }}
-        shell: bash
+        #shell: bash
 
       - name: upload signed installer
         uses: actions/upload-artifact@v4

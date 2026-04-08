@@ -1,18 +1,8 @@
 name: DigiCert test
 
-on: [push]
-jobs:
-  create-bin:
-    runs-on: windows-latest
-    steps:
-      - name: Copy binary to workspace
-        run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
+on: [push, workflow_dispatch]
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-binary
-          path: ${{ github.workspace }}\\binary.exe
+jobs:
 
   binary-sign:
     runs-on: windows-latest
@@ -21,26 +11,33 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Copy artifact to workspace
-        uses: actions/download-artifact@v4
-        with:
-          name: my-binary
-          path: ${{ github.workspace }}
+      - name: Copy binary to workspace
+        run: cp c:\\Windows\\notepad.exe ${{ github.workspace }}\\binary.exe
 
       - name: List files in the repository
         run: |
             ls ${{ github.workspace }}
 
-      - name: Sign binary
-        uses: lando/code-sign-action@v3
+
+      - name: Setup SM_CLIENT_CERT_FILE from base64 secret data
+        run: |
+          echo "${{ secrets.WINDOZE_CERT_DATA }}" | base64 --decode > /d/Certificate_pkcs12.p12
+        shell: bash
+
+
+      - name: Setup Software Trust Manager
+        uses: digicert/code-signing-software-trust-action@v1
         with:
-          file: binary.exe
-          keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
-          keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY_TEST }}
-          keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH_TEST }}
-          keylocker-keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS_TEST }}
-          certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
-          certificate-data: ${{ secrets.WINDOZE_CERT_DATA_TEST }}
+              simple-signing-mode: true
+              # If the below 2 parameters are supplied, then smctl executable is invoked to attempt the signing.
+              input: ${{ github.workspace }}\\binary.exe
+              keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
+        env:
+              SM_HOST: ${{ secrets.KEYLOCKER_HOST }}
+              SM_API_KEY: ${{ secrets.KEYLOCKER_API_KEY }}
+              SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
+              SM_CLIENT_CERT_PASSWORD: ${{ secrets.WINDOZE_CERT_PASSWORD }}
+        #shell: bash
 
       - name: upload signed installer
         uses: actions/upload-artifact@v4

@@ -31,6 +31,7 @@ jobs:
               simple-signing-mode: true
               # If the below 2 parameters are supplied, then smctl executable is invoked to attempt the signing.
               input: ${{ github.workspace }}\\binary.exe
+              keypair-alias: ${{ secrets.CODESIGN_WIN_KEYPAIR_ALIAS }}
         env:
               SM_HOST: ${{ secrets.CODESIGN_WIN_KEYLOCKER_HOST }}
               SM_API_KEY: ${{ secrets.CODESIGN_WIN_KEYLOCKER_API_KEY }}
@@ -38,13 +39,20 @@ jobs:
               SM_CLIENT_CERT_PASSWORD: ${{ secrets.CODESIGN_WIN_CERT_P12_PASSWORD }}
         #shell: bash
 
+      - name: Verify signature
+        shell: pwsh
+        run: |
+          $sig = Get-AuthenticodeSignature "${{ github.workspace }}\binary.exe"
+          $sig | Format-List Status, StatusMessage, SignerCertificate, TimeStamperCertificate
+          if ($sig.Status -ne 'Valid') { throw "binary.exe is not validly signed: $($sig.Status)" }
+
       - name: upload signed installer
         uses: actions/upload-artifact@v4
         with:
             name: Installer-signed
             path: |
              ${{ github.workspace }}\\binary.exe
-             if-no-files-found: error
+            if-no-files-found: error
 
       - run: echo "This job's status is ${{ job.status }}."
 

@@ -21,7 +21,7 @@ jobs:
 
       - name: Setup SM_CLIENT_CERT_FILE from base64 secret data
         run: |
-          echo "${{ secrets.WINDOZE_CERT_DATA }}" | base64 --decode > /d/Certificate_pkcs12.p12
+          echo "${{ secrets.CODESIGN_WIN_CERT_P12_BASE64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
         shell: bash
 
 
@@ -33,10 +33,10 @@ jobs:
               input: ${{ github.workspace }}\\binary.exe
               keypair-alias: ${{ secrets.KEYLOCKER_KEYPAIR_ALIAS }}
         env:
-              SM_HOST: ${{ secrets.KEYLOCKER_HOST }}
-              SM_API_KEY: ${{ secrets.KEYLOCKER_API_KEY }}
+              SM_HOST: ${{ secrets.CODESIGN_WIN_KEYLOCKER_HOST }}
+              SM_API_KEY: ${{ secrets.CODESIGN_WIN_KEYLOCKER_API_KEY }}
               SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
-              SM_CLIENT_CERT_PASSWORD: ${{ secrets.WINDOZE_CERT_PASSWORD }}
+              SM_CLIENT_CERT_PASSWORD: ${{ secrets.CODESIGN_WIN_CERT_P12_PASSWORD }}
         #shell: bash
 
       - name: upload signed installer
